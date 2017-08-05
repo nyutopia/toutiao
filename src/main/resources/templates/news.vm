@@ -1,51 +1,54 @@
-<heml>
+<html>
 <body>
 <pre>
-Hello VM
-##注释
+Hello VM.
+
+## 你看不到我
+
 #*
-注释
+这里都看不到
 *#
+
 value1:$!{value1}
-$!{value2} ##如果变量不存在 就不显示
-${value3}  ##以文本方式显示
+$!{value2}
+${value3}
 
 #foreach ($color in $colors)
-Color $!{foreach.index}/$!{foreach.count}:$!{color}
+Color $!{foreach.index}/$!{foreach.count}: $!{color}
+#end
+
+#foreach($key in $map.keySet())
+Number $!{foreach.index}/$!{foreach.count}: $!{key} $map.get($key)
+#end
+
+#foreach($kv in $map.entrySet())
+Number $!{foreach.index}/$!{foreach.count}: $!{kv.key} $!{kv.value}
 #end
 
 
-#foreach ($key in $map.keySet())
-Num $!{foreach.index}/$!{foreach.count}:$!{key}  $map.get($key)
-#end
-
-#foreach ($kv in $map.entrySet())
-Num2 $!{foreach.index}/$!{foreach.count}:$kv.getKey()  $kv.getValue()
-#end
-
-User:$user.getName()
-User:$!{user.getName()}
 User:$!{user.name}
+User:$!{user.getName()}
 
-#set($title="ny")
-Include:#include("header.vm") <br>
+#set($title = "nowcoder")
+Include: #include("header.vm") <br>
 Parse:#parse("header.vm")
 
-#macro (render_color,$color,$index)
-Color By Macro $index,$color
+#macro (render_color, $color, $index)
+Color By Macro $index, $color
 #end
 
 #foreach ($color in $colors)
-    #render_color($color,$foreach.index)
+    #render_color($color, $foreach.index)
 #end
 
 #set($hello = "hello")
 #set($hworld1 = "$!{hello} world")
 #set($hworld2 = '$!{hello} world')
 
-hworld1:$hworld1  ##hworld1:hello world
+hworld1:$hworld1
+hworld2:$hworld2
 
-hworld2:$hworld2  ##hworld2:$!{hello} world
+$!{colors.size()}
 
 </pre>
 </body>

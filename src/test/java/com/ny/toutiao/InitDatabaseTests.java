@@ -1,11 +1,10 @@
 package com.ny.toutiao;
 
+import com.ny.toutiao.dao.CommentDAO;
 import com.ny.toutiao.dao.LoginTicketDAO;
 import com.ny.toutiao.dao.NewsDAO;
 import com.ny.toutiao.dao.UserDAO;
-import com.ny.toutiao.model.LoginTicket;
-import com.ny.toutiao.model.News;
-import com.ny.toutiao.model.User;
+import com.ny.toutiao.model.*;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -32,6 +31,9 @@ public class InitDatabaseTests {
     @Autowired
     LoginTicketDAO loginTicketDAO;
 
+
+    @Autowired
+    CommentDAO commentDAO;
     @Test
     public void initData() {
         Random random = new Random();
@@ -56,6 +58,17 @@ public class InitDatabaseTests {
 
             newsDAO.addNews(news);
 
+            // 给每个资讯插入3个评论
+            for(int j = 0; j < 3; ++j) {
+                Comment comment = new Comment();
+                comment.setUserId(i+1);
+                comment.setCreatedDate(new Date());
+                comment.setStatus(0);
+                comment.setContent("这里是一个评论啊！" + String.valueOf(j));
+                comment.setEntityId(news.getId());
+                comment.setEntityType(EntityType.ENTITY_NEWS);
+                commentDAO.addComment(comment);
+            }
             user.setPassword("newpassword");
             userDAO.updatePassword(user);
 
@@ -75,5 +88,7 @@ public class InitDatabaseTests {
 
         Assert.assertEquals(1, loginTicketDAO.selectByTicket("TICKET1").getUserId());
         Assert.assertEquals(2, loginTicketDAO.selectByTicket("TICKET1").getStatus());
+
+        Assert.assertNotNull(commentDAO.selectByEntity(1, EntityType.ENTITY_NEWS).get(0));
     }
 }
