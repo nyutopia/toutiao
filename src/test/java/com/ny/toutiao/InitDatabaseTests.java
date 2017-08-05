@@ -1,7 +1,9 @@
 package com.ny.toutiao;
 
+import com.ny.toutiao.dao.LoginTicketDAO;
 import com.ny.toutiao.dao.NewsDAO;
 import com.ny.toutiao.dao.UserDAO;
+import com.ny.toutiao.model.LoginTicket;
 import com.ny.toutiao.model.News;
 import com.ny.toutiao.model.User;
 import org.junit.Assert;
@@ -27,6 +29,8 @@ public class InitDatabaseTests {
 
     @Autowired
     NewsDAO newsDAO ;
+    @Autowired
+    LoginTicketDAO loginTicketDAO;
 
     @Test
     public void initData() {
@@ -54,11 +58,22 @@ public class InitDatabaseTests {
 
             user.setPassword("newpassword");
             userDAO.updatePassword(user);
+
+            LoginTicket ticket = new LoginTicket();
+            ticket.setStatus(0);
+            ticket.setUserId(i+1);
+            ticket.setExpired(date);
+            ticket.setTicket(String.format("TICKET%d", i+1));
+            loginTicketDAO.addTicket(ticket);
+
+            loginTicketDAO.updateStatus(ticket.getTicket(), 2);
         }
 
         Assert.assertEquals("newpassword",userDAO.selectaById(1).getPassword());
         userDAO.deleteById(1);
         Assert.assertNull(userDAO.selectaById(1));
 
+        Assert.assertEquals(1, loginTicketDAO.selectByTicket("TICKET1").getUserId());
+        Assert.assertEquals(2, loginTicketDAO.selectByTicket("TICKET1").getStatus());
     }
 }
