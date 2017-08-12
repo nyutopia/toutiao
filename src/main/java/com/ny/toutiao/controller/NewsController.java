@@ -1,10 +1,7 @@
 package com.ny.toutiao.controller;
 
 import com.ny.toutiao.model.*;
-import com.ny.toutiao.service.CommentService;
-import com.ny.toutiao.service.NewsService;
-import com.ny.toutiao.service.QiniuService;
-import com.ny.toutiao.service.UserService;
+import com.ny.toutiao.service.*;
 import com.ny.toutiao.util.ToutiaoUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,11 +41,20 @@ public class NewsController {
     @Autowired
     UserService userService;
 
+    @Autowired
+    LikeService likeService;
+
     @RequestMapping(path = {"/news/{newsId}"}, method = {RequestMethod.GET})
     public String newsDetail(@PathVariable("newsId") int newsId, Model model) {
         try {
             News news = newsService.getById(newsId);
             if (news != null) {
+                int localUserId = hostHolder.getUser() != null ? hostHolder.getUser().getId() : 0;
+                if (localUserId != 0) {
+                    model.addAttribute("like", likeService.getLikeStatus(localUserId, EntityType.ENTITY_NEWS, news.getId()));
+                } else {
+                    model.addAttribute("like", 0);
+                }
                 List<Comment> comments = commentService.getCommentsByEntity(news.getId(), EntityType.ENTITY_NEWS);
                 List<ViewObject> commentVOs = new ArrayList<>();
                 for (Comment comment : comments) {

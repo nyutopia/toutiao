@@ -1,8 +1,10 @@
 package com.ny.toutiao.controller;
 
+import com.ny.toutiao.model.EntityType;
 import com.ny.toutiao.model.HostHolder;
 import com.ny.toutiao.model.News;
 import com.ny.toutiao.model.ViewObject;
+import com.ny.toutiao.service.LikeService;
 import com.ny.toutiao.service.NewsService;
 import com.ny.toutiao.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,16 +31,24 @@ public class HomeController {
     UserService userService;
     @Autowired
     private HostHolder hostHolder;
+    @Autowired
+    LikeService likeService;
 
     private List<ViewObject> getNews(int userId,int offset,int limit){
         List<News> newsList = newsService.getLatestNews(userId,offset,limit);
 //        model.addAttribute("news",newsList);
 //        model.addAttribute("users",userlist); 不可行
+        int localUserId = hostHolder.getUser() != null ? hostHolder.getUser().getId() : 0;
         List<ViewObject> vos = new ArrayList<>();
         for(News news:newsList){
             ViewObject vo = new ViewObject();
             vo.set("news",news);
             vo.set("user",userService.getUser(news.getUserId()));
+            if (localUserId != 0) {
+                vo.set("like", likeService.getLikeStatus(localUserId, EntityType.ENTITY_NEWS, news.getId()));
+            } else {
+                vo.set("like", 0);
+            }
             vos.add(vo);
         }
         return vos;
