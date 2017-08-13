@@ -1,5 +1,8 @@
 package com.ny.toutiao.controller;
 
+import com.ny.toutiao.async.EventModel;
+import com.ny.toutiao.async.EventProducer;
+import com.ny.toutiao.async.EventType;
 import com.ny.toutiao.model.News;
 import com.ny.toutiao.model.ViewObject;
 import com.ny.toutiao.service.NewsService;
@@ -26,6 +29,9 @@ public class LoginController {
     private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
     @Autowired
     NewsService newsService;
+
+    @Autowired
+    EventProducer eventProducer;
 
     @Autowired
     UserService userService;
@@ -63,7 +69,8 @@ public class LoginController {
     @ResponseBody
     public String login(Model model, @RequestParam("username") String username,
                       @RequestParam("password") String password,
-                      @RequestParam(value="rember",defaultValue = "0") int rememberme){
+                      @RequestParam(value="rember",defaultValue = "0") int rememberme,
+                        HttpServletResponse response){
 
         try{
             Map<String,Object> map = userService.login(username,password);
@@ -74,6 +81,10 @@ public class LoginController {
                 if(rememberme>0){
                     cookie.setMaxAge(3600*24*5);
                 }
+                response.addCookie(cookie);
+                eventProducer.fireEvent(new
+                        EventModel(EventType.LOGIN).setActorId((int)map.get("userId"))
+                        .setExt("username", username).setExt("email", "ny@qq.com"));
                 return ToutiaoUtil.getJSONString(0,"注册成功");
             }else{
                 return ToutiaoUtil.getJSONString(1,map);
