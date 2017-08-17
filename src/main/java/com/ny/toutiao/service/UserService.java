@@ -6,6 +6,8 @@ import com.ny.toutiao.model.LoginTicket;
 import com.ny.toutiao.model.User;
 import com.ny.toutiao.util.ToutiaoUtil;
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +18,7 @@ import java.util.*;
  */
 @Service
 public class UserService {
+    private static final Logger logger = LoggerFactory.getLogger(UserService.class);
     @Autowired
     private UserDAO userDAO;
 
@@ -44,7 +47,7 @@ public class UserService {
         user.setName(username);
 //        user.setPassword(password);
         user.setSalt(UUID.randomUUID().toString().substring(0,5));
-        user.setHeadUrl(String.format("http://images.nowcoder.com/head/%dm.png",new Random().nextInt(1000)));
+        user.setHeadUrl(String.format("http://images.nowcoder.com/head/%dt.png",new Random().nextInt(1000)));
         user.setPassword(ToutiaoUtil.MD5(password+user.getSalt()));
         userDAO.addUser(user);
 
@@ -72,10 +75,11 @@ public class UserService {
             return map;
         }
 
-        if(ToutiaoUtil.MD5(password+user.getSalt()).equals(user.getPassword())){
+        if(!ToutiaoUtil.MD5(password+user.getSalt()).equals(user.getPassword())){
             map.put("msgpwd","密码不正确");
             return map;
         }
+        map.put("userId",user.getId());
         //ticket
         String ticket = addLoginTicket(user.getId());
         map.put("ticket",ticket);
@@ -87,7 +91,8 @@ public class UserService {
         LoginTicket ticket = new LoginTicket();
         ticket.setUserId(userId);
         Date date = new Date();
-        date.setTime(date.getTime()+1000*3600*24);
+        //5天的有效期
+        date.setTime(date.getTime()+1000*3600*24*5);
         ticket.setExpired(date);
         ticket.setStatus(0);
         ticket.setTicket(UUID.randomUUID().toString().replaceAll("-",""));

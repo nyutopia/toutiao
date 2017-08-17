@@ -10,10 +10,12 @@ public enum EventType {
     MAIL(3);
 
     private int value;
-    EventType(int value){
+
+    EventType(int value) {
         this.value = value;
     }
-    public int getValue(){
+
+    public int getValue() {
         return value;
     }
 }

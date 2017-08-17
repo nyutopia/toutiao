@@ -53,18 +53,24 @@ public class HomeController {
         }
         return vos;
     }
+
+
     @RequestMapping(path={"/","/index"},method = {RequestMethod.GET,RequestMethod.POST})
-    public String index(Model model){
+    public String index(Model model,@RequestParam(value = "pop", defaultValue = "0") int pop){
 
         model.addAttribute("vos",getNews(0,0,10));
+        if (hostHolder.getUser() != null) {
+            pop = 0;
+        }
+        model.addAttribute("pop", pop);
         return "home";
     }
+
     @RequestMapping(path={"/user/{userId}"},method = {RequestMethod.GET,RequestMethod.POST})
-    public String userIndex(Model model, @PathVariable("userId") int userId,
-                            @RequestParam(value="pop",defaultValue = "0") int pop){
+    public String userIndex(Model model, @PathVariable("userId") int userId){
 
         model.addAttribute("vos",getNews(userId,0,10));
-        model.addAttribute("pop",pop);
+
         return "home";
     }
 }

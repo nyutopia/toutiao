@@ -86,7 +86,6 @@ public class NewsController {
             comment.setStatus(0);
             commentService.addComment(comment);
 
-            // 更新评论数量，以后用异步实现
             int count = commentService.getCommentCount(comment.getEntityId(), comment.getEntityType());
             newsService.updateCommentCount(comment.getEntityId(), count);
 
@@ -137,9 +136,9 @@ public class NewsController {
         }
     }
 
-    @RequestMapping(path={"/uploadImage/"},method = {RequestMethod.GET,RequestMethod.POST})
+    @RequestMapping(path={"/uploadImage/"},method = {RequestMethod.POST})
     @ResponseBody
-    public String uploadImage(@RequestParam("file")MultipartFile file){
+    public String uploadImage(@RequestParam("file") MultipartFile file){
         try{
 //            String fileUrl = newsService.saveImage(file);
             String fileUrl = qiniuService.saveImage(file);

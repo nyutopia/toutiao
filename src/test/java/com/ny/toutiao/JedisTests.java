@@ -22,6 +22,7 @@ public class JedisTests {
     @Test
     public void testJedis() {
         jedisAdapter.set("hello", "world");
+        jedisAdapter.sadd("key", String.valueOf(2));
         Assert.assertEquals("world", jedisAdapter.get("hello"));
     }
     @Test

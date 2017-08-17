@@ -29,13 +29,14 @@ public class LikeHandler implements EventHandler {
     public void doHandle(EventModel model) {
         Message message = new Message();
         User user = userService.getUser(model.getActorId());
-        message.setToId(model.getEntityOwnerId());
+        message.setToId(model.getActorId());
         message.setContent("用户" + user.getName() +
                 " 赞了你的资讯,http://127.0.0.1:8080/news/"
                 + String.valueOf(model.getEntityId()));
         // SYSTEM ACCOUNT
         message.setFromId(3);
         message.setCreatedDate(new Date());
+        message.setConversationId(String.format("%d_%d", 3,user.getId()) );
         messageService.addMessage(message);
 
     }

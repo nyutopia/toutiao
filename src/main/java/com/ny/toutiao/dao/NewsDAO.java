@@ -19,6 +19,7 @@ public interface NewsDAO {
             ") values (#{title},#{link},#{image},#{likeCount},#{commentCount},#{createdDate},#{userId})"})
     int addNews(News news);
 
+    //通过 xml配置
     List<News> selectByUserIdAndOffset(@Param("userId") int userId,@Param("offset") int offset,
                                        @Param("limit") int limit);
 

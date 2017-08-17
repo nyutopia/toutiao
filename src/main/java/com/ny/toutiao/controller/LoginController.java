@@ -47,12 +47,11 @@ public class LoginController {
             Map<String,Object> map = userService.register(username,password);
             if(map.containsKey("ticket")){
                 Cookie cookie = new Cookie("ticket",map.get("ticket").toString());
-
                 cookie.setPath("/");
                 if(rememberme>0){
+                    //5天的有效期这个和后台数据库ticket有效期一致，默认浏览器关闭就无
                     cookie.setMaxAge(3600*24*5);
                 }
-
                 response.addCookie(cookie);
                 return ToutiaoUtil.getJSONString(0,"注册成功");
             }else{
@@ -82,10 +81,9 @@ public class LoginController {
                     cookie.setMaxAge(3600*24*5);
                 }
                 response.addCookie(cookie);
-                eventProducer.fireEvent(new
-                        EventModel(EventType.LOGIN).setActorId((int)map.get("userId"))
+                eventProducer.fireEvent(new EventModel(EventType.LOGIN).setActorId((int)map.get("userId"))
                         .setExt("username", username).setExt("email", "ny@qq.com"));
-                return ToutiaoUtil.getJSONString(0,"注册成功");
+                return ToutiaoUtil.getJSONString(0,"成功");
             }else{
                 return ToutiaoUtil.getJSONString(1,map);
 

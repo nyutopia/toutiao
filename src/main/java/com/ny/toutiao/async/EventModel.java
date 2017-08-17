@@ -21,9 +21,11 @@ public class EventModel {
     public Map<String, String> getExts() {
         return exts;
     }
+
     public EventModel() {
 
     }
+
     public EventModel(EventType type) {
         this.type = type;
     }

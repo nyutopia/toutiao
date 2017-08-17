@@ -1,9 +1,6 @@
 package com.ny.toutiao;
 
-import com.ny.toutiao.dao.CommentDAO;
-import com.ny.toutiao.dao.LoginTicketDAO;
-import com.ny.toutiao.dao.NewsDAO;
-import com.ny.toutiao.dao.UserDAO;
+import com.ny.toutiao.dao.*;
 import com.ny.toutiao.model.*;
 import org.junit.Assert;
 import org.junit.Test;
@@ -16,11 +13,12 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import java.util.Date;
 import java.util.Random;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = ToutiaoApplication.class)
+
 /**
  * Created by ny on 2017/8/1.
  */
+@RunWith(SpringJUnit4ClassRunner.class)
+@SpringApplicationConfiguration(classes = ToutiaoApplication.class)
 @Sql("/init-schema.sql")
 public class InitDatabaseTests {
     @Autowired
@@ -28,9 +26,12 @@ public class InitDatabaseTests {
 
     @Autowired
     NewsDAO newsDAO ;
+
     @Autowired
     LoginTicketDAO loginTicketDAO;
 
+    @Autowired
+    MessageDAO messageDAO;
 
     @Autowired
     CommentDAO commentDAO;
@@ -81,6 +82,14 @@ public class InitDatabaseTests {
 
             loginTicketDAO.updateStatus(ticket.getTicket(), 2);
         }
+
+        Message msg = new Message();
+        msg.setContent("nihao");
+        msg.setCreatedDate(new Date());
+        msg.setToId(4);
+        msg.setFromId(5);
+        msg.setConversationId( String.format("%d_%d", 4, 5) );
+        messageDAO.addMessage(msg);
 
         Assert.assertEquals("newpassword",userDAO.selectaById(1).getPassword());
         userDAO.deleteById(1);

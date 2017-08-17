@@ -20,9 +20,11 @@ import java.util.*;
  */
 //@Controller
 public class IndexController {
-    //这里通过注解，也可以是通过配置文件  控制反转(IOC)
+
     private static final Logger logger = LoggerFactory.getLogger(IndexController.class);
 
+    //这里通过注解，也可以是通过配置文件
+    //通过依赖注入控制反转(IOC)
     @Autowired
     private ToutiaoService toutiaoService;
 
@@ -109,7 +111,7 @@ public class IndexController {
     public RedirectView redirect(@PathVariable("code") int code,
                                  HttpSession session) {
         RedirectView red = new RedirectView("/", true);
-        //301 强制性跳转 302 临时性跳转
+        //301 永久性跳转 302 临时性跳转
         if (code == 301) {
             red.setStatusCode(HttpStatus.MOVED_PERMANENTLY);
         }

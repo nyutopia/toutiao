@@ -31,6 +31,7 @@ public class LoginExceptionHandler implements EventHandler {
         // SYSTEM ACCOUNT
         message.setFromId(3);
         message.setCreatedDate(new Date());
+        message.setConversationId(String.format("%d_%d", 3,(int)model.getActorId()) );
         messageService.addMessage(message);
 
         Map<String, Object> map = new HashMap();

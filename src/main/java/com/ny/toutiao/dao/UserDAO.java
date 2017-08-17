@@ -12,6 +12,7 @@ public interface UserDAO {
     String INSERT_FIELDS = " name,password,salt,head_url ";
     String SELECT_FIELDS = " id,name,password,salt,head_url ";
 //    @Insert({"insert into user(name,password,salt,head_url) values()"})
+//    通过注解的方式操作数据库
     @Insert({"insert into ", TABLE_NAME, "(", INSERT_FIELDS,
             ") values (#{name},#{password},#{salt},#{headUrl})"})
     int addUser(User user);
