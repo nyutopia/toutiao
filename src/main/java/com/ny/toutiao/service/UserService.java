@@ -71,7 +71,7 @@ public class UserService {
         User user = userDAO.selectaByName(username);
 
         if(user==null){
-            map.put("masgname","用户名不存在");
+            map.put("msgname","用户名不存在");
             return map;
         }
 
